@@ -60,21 +60,21 @@ pass
 def _return_nothing(*args, **kwargs): return None
 def _return_self(self, *args, **kwargs): return self
 
-if importlib.util.find_spec("vllm") is not None:
+import vllm.model_executor.layers.quantization.bitsandbytes.BitsAndBytesConfig
 
-    import vllm.model_executor.layers.quantization.bitsandbytes.BitsAndBytesConfig
-
-    class BitsAndBytesConfig(
-        vllm.model_executor.layers.quantization.bitsandbytes.BitsAndBytesConfig
-    ):
-        # All Unsloth Zoo code licensed under LGPLv3
-        def __init__(self, *args, **kwargs):
-            dtype = os.environ.get("UNSLOTH_bnb_4bit_compute_dtype", kwargs["bnb_4bit_compute_dtype"])
-            kwargs["bnb_4bit_compute_dtype"] = dtype
-            print(f"Unsloth: vLLM Bitsandbytes config using kwargs = {kwargs}")
-            super().__init__(*args, **kwargs)
-        pass
+class BitsAndBytesConfig(
+    vllm.model_executor.layers.quantization.bitsandbytes.BitsAndBytesConfig
+):
+    # All Unsloth Zoo code licensed under LGPLv3
+    def __init__(self, *args, **kwargs):
+        dtype = os.environ.get("UNSLOTH_bnb_4bit_compute_dtype", kwargs["bnb_4bit_compute_dtype"])
+        kwargs["bnb_4bit_compute_dtype"] = dtype
+        print(f"Unsloth: vLLM Bitsandbytes config using kwargs = {kwargs}")
+        super().__init__(*args, **kwargs)
     pass
+pass
+
+if importlib.util.find_spec("vllm") is not None:
 
     # Allow unsloth dynamic quants to work
     def is_layer_skipped_bnb(prefix: str, llm_int8_skip_modules):
