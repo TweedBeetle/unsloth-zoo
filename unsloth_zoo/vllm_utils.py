@@ -60,6 +60,17 @@ pass
 def _return_nothing(*args, **kwargs): return None
 def _return_self(self, *args, **kwargs): return self
 
+class BitsAndBytesConfig(
+    vllm.model_executor.layers.quantization.bitsandbytes.BitsAndBytesConfig
+):
+    # All Unsloth Zoo code licensed under LGPLv3
+    def __init__(self, *args, **kwargs):
+        dtype = os.environ.get("UNSLOTH_bnb_4bit_compute_dtype", kwargs["bnb_4bit_compute_dtype"])
+        kwargs["bnb_4bit_compute_dtype"] = dtype
+        print(f"Unsloth: vLLM Bitsandbytes config using kwargs = {kwargs}")
+        super().__init__(*args, **kwargs)
+    pass
+pass
 
 if importlib.util.find_spec("vllm") is not None:
 
@@ -159,18 +170,6 @@ if importlib.util.find_spec("vllm") is not None:
         dtype = str(dtype)
         if dtype.startswith("torch."): dtype = dtype[len("torch."):]
         os.environ["UNSLOTH_bnb_4bit_compute_dtype"] = dtype
-
-        class BitsAndBytesConfig(
-            vllm.model_executor.layers.quantization.bitsandbytes.BitsAndBytesConfig
-        ):
-            # All Unsloth Zoo code licensed under LGPLv3
-            def __init__(self, *args, **kwargs):
-                dtype = os.environ.get("UNSLOTH_bnb_4bit_compute_dtype", kwargs["bnb_4bit_compute_dtype"])
-                kwargs["bnb_4bit_compute_dtype"] = dtype
-                print(f"Unsloth: vLLM Bitsandbytes config using kwargs = {kwargs}")
-                super().__init__(*args, **kwargs)
-            pass
-        pass
 
         vllm.model_executor.layers.quantization.bitsandbytes.BitsAndBytesConfig = BitsAndBytesConfig
         return old_config
