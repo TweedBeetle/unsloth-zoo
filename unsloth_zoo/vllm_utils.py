@@ -60,6 +60,8 @@ pass
 def _return_nothing(*args, **kwargs): return None
 def _return_self(self, *args, **kwargs): return self
 
+import vllm.model_executor.layers.quantization.bitsandbytes.BitsAndBytesConfig
+
 class BitsAndBytesConfig(
     vllm.model_executor.layers.quantization.bitsandbytes.BitsAndBytesConfig
 ):
