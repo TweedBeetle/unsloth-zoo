@@ -62,7 +62,7 @@ def _return_self(self, *args, **kwargs): return self
 
 if importlib.util.find_spec("vllm") is not None:
 
-    import vllm.model_executor.layers.quantization.bitsandbytes.BitsAndBytesConfig
+    import vllm.model_executor.layers.quantization.bitsandbytes
 
     class BitsAndBytesConfig(
         vllm.model_executor.layers.quantization.bitsandbytes.BitsAndBytesConfig
